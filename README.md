@@ -1,9 +1,9 @@
 # imgclass
 python 的图形分类封装包
-
+# 训练代码
+```python
 import sys
 sys.path.append("/Users/xingzheng/Documents/pypkgs/imgclass")
-
 from training import Train
 
 def run():
@@ -14,3 +14,4 @@ def run():
 
 if __name__ == '__main__':
     run()
+```
