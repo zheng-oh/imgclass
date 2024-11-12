@@ -69,8 +69,8 @@ class Train:
     def runwork(self):
         for epoch in range(self.num_epochs):
             logging.info("训练迭代：%d/%d" % (epoch, self.num_epochs))
-            train_acc, train_loss = self.train(epoch)
-            valid_acc, valid_loss = self.vaild(epoch)
+            train_acc, train_loss = self.train()
+            valid_acc, valid_loss = self.vaild()
             # 使用 SummaryWriter 记录训练和验证的损失和准确率
             self.writer.add_scalar('Loss/train', train_loss, epoch)
             self.writer.add_scalar('Loss/valid', valid_loss, epoch)
