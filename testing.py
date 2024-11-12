@@ -1,4 +1,5 @@
 import os.path
+
 # import sys
 # sys.path.append("..")
 import torch
@@ -13,14 +14,14 @@ class Test:
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.criterion = nn.CrossEntropyLoss()
         self.modelname = modelname
-        self.modelmsg = ''
-        self.model = ''
+        self.modelmsg = ""
+        self.model = ""
         self.dp = dp
         self.net_num = net_num
         self.batch_size = batch_size
         self.num_classes = 0
-        self.test_datasets = ''
-        self.dataloaders = ''
+        self.test_datasets = ""
+        self.dataloaders = ""
         self.test_num = 0
         self.lables = []  # 存储标签名称
         self.target_list = []  # 存储真实标签
@@ -39,7 +40,11 @@ class Test:
         print(classes)
         self.pred()
         result = {"test_acc": self.test_acc, "test_loss": self.test_loss}
-        print("test_acc:{:.2f},test_loss{:.2f}".format(result["test_acc"], result["test_loss"]))
+        print(
+            "test_acc:{:.2f},test_loss{:.2f}".format(
+                result["test_acc"], result["test_loss"]
+            )
+        )
         if not os.path.exists("results"):
             os.mkdir("results")
         torch.save(result, "./results/{}.pkl".format(self.modelname))
@@ -47,12 +52,14 @@ class Test:
 
     def get_model(self):
         print("加载model：{}".format(self.modelname))
-        self.modelmsg = torch.load('./models/{}.pkl'.format(self.modelname))
+        self.modelmsg = torch.load("./models/{}.pkl".format(self.modelname))
         self.model = self.modelmsg["model"].to(self.device)
         # print(self.modelmsg)
 
     def get_dataloaders(self):
-        t_datasets, self.dataloaders = run_pre(self.dp, stage="test", net_num=self.net_num, batch_size=self.batch_size)
+        t_datasets, self.dataloaders = run_pre(
+            self.dp, stage="test", net_num=self.net_num, batch_size=self.batch_size
+        )
         self.test_num = len(t_datasets)
         return t_datasets.classes
 
@@ -81,7 +88,6 @@ class Test:
                 self.score_list.extend(output.detach().cpu().numpy())
                 self.target_list.extend(target.cpu().numpy())
                 self.preds_list.extend(preds.cpu().numpy())
-                break
             self.test_loss += loss
             self.test_acc = correct / self.test_num
             self.matrix = self.confusion_matrix(self.matrix)
@@ -96,7 +102,14 @@ class Test:
             # print("每种类别的识别准确率为：{0}".format([rate * 100 for rate in corrects / per_kinds]))
 
     def plt(self):
-        p = Resultplt(self.num_classes, self.target_list, self.score_list, self.matrix, self.lables, self.test_acc)
+        p = Resultplt(
+            self.num_classes,
+            self.target_list,
+            self.score_list,
+            self.matrix,
+            self.lables,
+            self.test_acc,
+        )
         # p.roc("roc_{}".format(self.modelname))
         # p.conf_mat("matrix_{}".format(self.modelname))
         p.max_roc("max_roc_{}".format(self.modelname))

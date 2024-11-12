@@ -1,17 +1,16 @@
 # imgclass
 python 的图形分类封装包
-# 训练代码
-```python
-import sys
-sys.path.append("/Users/xingzheng/Documents/pypkgs/imgclass")
-from training import Train
 
-def run():
-    name = "duck_200_ie"
-    tr = Train(name,"./data/IE",18,num_epochs=60)
-    tr.run()
-    print("结束")
 
-if __name__ == '__main__':
-    run()
+## 1. 数据预处理
+- prepro.py 
+- 返回torch.utils.data.DataLoader
 ```
+from prepro import run_pre
+dataloader = run_pre(data_path, stage="train", batch_size=8, normalize=False)
+```
+## 2. 训练模型
+
+
+
+## 3. 测试模型
