@@ -4,7 +4,7 @@ from torchvision import datasets
 from torchvision.transforms import transforms
 
 
-def run_pre(data_path, stage="train", batch_size=8, normalize=False):
+def run_pre(data_path, stage="train", normalize=False):
   # 定义基础的图像预处理步骤
     base_transforms = [
         transforms.Resize(256),

@@ -10,14 +10,14 @@ import numpy as np
 
 
 class Test:
-    def __init__(self, modelname="train", dp="./data", net_num=50, batch_size=8):
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    def __init__(self, modelname="train", dp="./data", batch_size=8):
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
         self.criterion = nn.CrossEntropyLoss()
         self.modelname = modelname
         self.modelmsg = ""
         self.model = ""
         self.dp = dp
-        self.net_num = net_num
+        self.logname = "./logs/%s.log" % modelname
         self.batch_size = batch_size
         self.num_classes = 0
         self.test_datasets = ""
@@ -31,14 +31,14 @@ class Test:
         self.test_loss = 0
         self.test_acc = 0
 
-    def run(self):
+    def runtest(self):
         print("进入testing")
-        self.get_model()
-        classes = self.get_dataloaders()
-        self.lables = classes
-        self.num_classes = len(classes)
-        print(classes)
-        self.pred()
+        print("加载model: {}".format(self.modelname))
+        self.modelmsg = torch.load("./models/{}.pkl".format(self.modelname))
+        self.model = self.modelmsg["model"].to(self.device)    
+        self.test_num = len(self.dataloaders['test'].dataset)
+        self.runwork()
+
         result = {"test_acc": self.test_acc, "test_loss": self.test_loss}
         print(
             "test_acc:{:.2f},test_loss{:.2f}".format(
@@ -47,21 +47,8 @@ class Test:
         )
         if not os.path.exists("results"):
             os.mkdir("results")
-        torch.save(result, "./results/{}.pkl".format(self.modelname))
-        self.plt()
+        torch.save(result, "./results/{}_test.pkl".format(self.modelname))
 
-    def get_model(self):
-        print("加载model：{}".format(self.modelname))
-        self.modelmsg = torch.load("./models/{}.pkl".format(self.modelname))
-        self.model = self.modelmsg["model"].to(self.device)
-        # print(self.modelmsg)
-
-    def get_dataloaders(self):
-        t_datasets, self.dataloaders = run_pre(
-            self.dp, stage="test", net_num=self.net_num, batch_size=self.batch_size
-        )
-        self.test_num = len(t_datasets)
-        return t_datasets.classes
 
     def confusion_matrix(self, conf_matrix):
         # print(self.preds_list)
@@ -70,12 +57,12 @@ class Test:
             conf_matrix[p, t] += 1
         return conf_matrix
 
-    def pred(self):
+    def runwork(self):
         self.model.eval()
         correct = 0.0
         self.matrix = torch.zeros(self.num_classes, self.num_classes)  # 创建一个空矩阵存储混淆矩阵
         with torch.no_grad():
-            for batch_id, (data, target) in enumerate(self.dataloaders):
+            for batch_id, (data, target) in enumerate(self.dataloaders['test']):
                 data, target = data.to(self.device), target.to(self.device)
                 output = self.model(data)
                 loss = self.criterion(output, target).item()

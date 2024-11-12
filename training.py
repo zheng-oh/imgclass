@@ -95,6 +95,9 @@ class Train:
                     )
                 )
                 torch.save(self.best_model, "./models/{0}.pkl".format(self.name))
+            # 训练结束后确保所有日志数据写入磁盘
+            self.writer.flush()
+        self.writer.close()
         logging.info(
             "{} Finished".format(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
         )
