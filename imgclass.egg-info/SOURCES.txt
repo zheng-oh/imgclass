@@ -1,0 +1,12 @@
+README.md
+setup.py
+imgclass/__init__.py
+imgclass/prepro.py
+imgclass/result.py
+imgclass/testing.py
+imgclass/training.py
+imgclass.egg-info/PKG-INFO
+imgclass.egg-info/SOURCES.txt
+imgclass.egg-info/dependency_links.txt
+imgclass.egg-info/requires.txt
+imgclass.egg-info/top_level.txt

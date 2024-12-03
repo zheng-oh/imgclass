@@ -2,7 +2,7 @@ import torch
 from torch import nn
 from torchvision import models
 import logging
-from prepro import run_pre
+from imgclass.prepro import run_pre
 import time
 from torch.utils.tensorboard import SummaryWriter
 
