@@ -1,7 +1,7 @@
 Metadata-Version: 2.1
 Name: imgclass
-Version: 0.1.1
-Summary: 更新包目录结构
+Version: 0.1.3
+Summary: 修复 pred 类异常bug
 Home-page: https://github.com/zheng-oh/imgclass
 Author: ZXING
 Author-email: zxing_oh@163.com

@@ -1,6 +1,7 @@
 README.md
 setup.py
 imgclass/__init__.py
+imgclass/pred.py
 imgclass/prepro.py
 imgclass/result.py
 imgclass/testing.py

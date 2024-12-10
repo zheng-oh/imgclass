@@ -4,7 +4,6 @@ import os.path
 # sys.path.append("..")
 import torch
 import torch.nn as nn
-from prepro import run_pre
 from result import Resultplt
 import numpy as np
 
@@ -67,10 +66,6 @@ class Test:
                 output = self.model(data)
                 loss = self.criterion(output, target).item()
                 e_class, preds = torch.max(output, dim=1)
-                print(output)
-                print(output.shape)
-                print(e_class)
-                print(preds)
                 correct += torch.sum(preds == target)
                 self.score_list.extend(output.detach().cpu().numpy())
                 self.target_list.extend(target.cpu().numpy())
@@ -80,13 +75,6 @@ class Test:
             self.matrix = self.confusion_matrix(self.matrix)
             self.matrix = self.matrix.cpu()
             self.matrix = np.array(self.matrix)
-            # corrects = self.matrix.diagonal(offset=0)
-            # per_kinds = self.matrix.sum(axis=1)
-            # print("混淆矩阵总元素个数：{0},测试集总个数:{1}".format(int(np.size(self.matrix)), self.test_num))
-            # 获取每种Emotion的识别准确率
-            # print("每种类别总个数：", per_kinds)
-            # print("每种类别预测正确的个数：", corrects)
-            # print("每种类别的识别准确率为：{0}".format([rate * 100 for rate in corrects / per_kinds]))
 
     def plt(self):
         p = Resultplt(

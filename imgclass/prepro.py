@@ -2,10 +2,11 @@
 import torch
 from torchvision import datasets
 from torchvision.transforms import transforms
+from PIL import Image
 
 
 def run_pre(data_path, stage="train", normalize=False):
-  # 定义基础的图像预处理步骤
+    # 定义基础的图像预处理步骤
     base_transforms = [
         transforms.Resize(256),
         transforms.CenterCrop(224),
@@ -26,10 +27,17 @@ def run_pre(data_path, stage="train", normalize=False):
             transforms.RandomVerticalFlip()
         ]
         data_transforms = transforms.Compose(additional_transforms + base_transforms)
+        the_datasets = datasets.ImageFolder(data_path, data_transforms)
     elif stage == "test":
         data_transforms = transforms.Compose(base_transforms)
+        the_datasets = datasets.ImageFolder(data_path, data_transforms)
+    elif stage == "pred":
+        data_transforms = transforms.Compose(base_transforms)
+        image = Image.open(data_path)
+        if image.mode != 'RGB':
+            image = image.convert('RGB')
+        the_datasets = data_transforms(image).unsqueeze(0)
     else:
-        raise ValueError("Stage must be 'train' or 'test'.")
+        raise ValueError("Stage must be 'train', 'test' or 'pred'.")
 
-    the_datasets = datasets.ImageFolder(data_path, data_transforms)
     return the_datasets
