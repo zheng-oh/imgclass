@@ -33,10 +33,9 @@ def run_pre(data_path, stage="train", normalize=False):
         the_datasets = datasets.ImageFolder(data_path, data_transforms)
     elif stage == "pred":
         data_transforms = transforms.Compose(base_transforms)
-        image = Image.open(data_path)
-        if image.mode != 'RGB':
-            image = image.convert('RGB')
-        the_datasets = data_transforms(image).unsqueeze(0)
+        if data_path.mode != 'RGB':
+            data_path = data_path.convert('RGB')
+        the_datasets = data_transforms(data_path).unsqueeze(0)
     else:
         raise ValueError("Stage must be 'train', 'test' or 'pred'.")
 
