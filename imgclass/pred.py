@@ -4,7 +4,6 @@ import torch
 import torch.nn as nn
 import numpy as np
 from PIL import Image
-from torchvision import transforms
 import matplotlib
 matplotlib.use('Agg')  # 设置后端为非交互式
 import matplotlib.pyplot as plt
@@ -45,20 +44,15 @@ class FeatureMapVisualizer:
      # 将图片转换为Base64编码
         img_buf.seek(0)
         return base64.b64encode(img_buf.read()).decode('utf-8')
+    
 class Pred:
-    def __init__(self, modelname="train"):
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
-        self.modelname = modelname
-        self.model = None
+    def __init__(self):
         self.feature_map_visualizer = None
-
+        
     def runpred(self):
-        self.modelmsg = torch.load("./models/{}.pkl".format(self.modelname))
-        self.model = self.modelmsg["model"].to(self.device)    
-                # 注册钩子来捕获特征图
+        # 注册钩子来捕获特征图
         self.feature_map_visualizer = FeatureMapVisualizer(self.model, self.device)
         self.feature_map_visualizer.register_hooks()
-        
         # 获取预测结果
         pred_class, confidence = self.runwork()
         # 绘制特征图
@@ -73,3 +67,7 @@ class Pred:
             probabilities = torch.nn.functional.softmax(output, dim=1)
             confidence, pred_class = torch.max(probabilities, dim=1)
             return pred_class, confidence
+    def save_feature_map(self,modelname):
+        # 保存特征图
+        with open("./results/{}.png".format(modelname), "wb") as f:
+            f.write(base64.b64decode(self.feature_map))

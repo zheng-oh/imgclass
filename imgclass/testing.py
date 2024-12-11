@@ -1,22 +1,15 @@
 import os.path
-
-# import sys
-# sys.path.append("..")
 import torch
 import torch.nn as nn
-from result import Resultplt
 import numpy as np
 
 
 class Test:
-    def __init__(self, modelname="train", dp="./data", batch_size=8):
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
+    def __init__(self, modelname="train", dp="./data", net_num=18, batch_size=8):
         self.criterion = nn.CrossEntropyLoss()
         self.modelname = modelname
-        self.modelmsg = ""
-        self.model = ""
         self.dp = dp
-        self.logname = "./logs/%s.log" % modelname
+        self.net_num = net_num
         self.batch_size = batch_size
         self.num_classes = 0
         self.test_datasets = ""
@@ -31,27 +24,17 @@ class Test:
         self.test_acc = 0
 
     def runtest(self):
-        print("进入testing")
-        print("加载model: {}".format(self.modelname))
-        self.modelmsg = torch.load("./models/{}.pkl".format(self.modelname))
-        self.model = self.modelmsg["model"].to(self.device)    
+        print("加载model: {}".format(self.modelname))  
         self.test_num = len(self.dataloaders['test'].dataset)
         self.runwork()
-
         result = {"test_acc": self.test_acc, "test_loss": self.test_loss}
         print(
             "test_acc:{:.2f},test_loss{:.2f}".format(
                 result["test_acc"], result["test_loss"]
             )
         )
-        if not os.path.exists("results"):
-            os.mkdir("results")
-        torch.save(result, "./results/{}_test.pkl".format(self.modelname))
-
 
     def confusion_matrix(self, conf_matrix):
-        # print(self.preds_list)
-        # print(self.target_list)
         for p, t in zip(self.preds_list, self.target_list):
             conf_matrix[p, t] += 1
         return conf_matrix
@@ -76,15 +59,3 @@ class Test:
             self.matrix = self.matrix.cpu()
             self.matrix = np.array(self.matrix)
 
-    def plt(self):
-        p = Resultplt(
-            self.num_classes,
-            self.target_list,
-            self.score_list,
-            self.matrix,
-            self.lables,
-            self.test_acc,
-        )
-        # p.roc("roc_{}".format(self.modelname))
-        # p.conf_mat("matrix_{}".format(self.modelname))
-        p.max_roc("max_roc_{}".format(self.modelname))

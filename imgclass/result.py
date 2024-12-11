@@ -142,6 +142,3 @@ class Resultplt:
         plt.savefig("./results/{}.pdf".format(name))
 
 
-class Resultexport:
-    def __init__(self):
-        pass

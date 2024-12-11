@@ -33,6 +33,9 @@ def run_pre(data_path, stage="train", normalize=False):
         the_datasets = datasets.ImageFolder(data_path, data_transforms)
     elif stage == "pred":
         data_transforms = transforms.Compose(base_transforms)
+        # 判断data_path是否为图片路径 还是PIL图像
+        if isinstance(data_path, str):
+            data_path = Image.open(data_path)
         if data_path.mode != 'RGB':
             data_path = data_path.convert('RGB')
         the_datasets = data_transforms(data_path).unsqueeze(0)
