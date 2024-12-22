@@ -96,6 +96,7 @@ class Deeptrain(Train):
         data[self.name]['valid_loss'] = self.best_model["valid_loss"]
         data[self.name]['epochs'] = self.num_epochs
         data[self.name]['ratio'] = self.ratio
+        data[self.name]['class_name'] = self.class_name
         # 将更新后的数据写回 JSON 文件
         with open('./results/models_info.json', 'w') as f:
             json.dump(data, f, indent=4)  # 使用 indent 使 JSON 格式化更美观

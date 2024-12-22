@@ -2,10 +2,10 @@ from setuptools import setup, find_packages
 
 setup(
     name="imgclass",  # 包名称
-    version="0.1.5",  # 包版本
+    version="0.1.6",  # 包版本
     author="ZXING",  # 作者名
     author_email="zxing_oh@163.com",  # 作者邮箱
-    description="add example 优化结构",  # 包描述
+    description="example中 add class_name 到model_info",  # 包描述
     long_description=open("README.md").read(),  # 从 README 加载长描述
     long_description_content_type="text/markdown",  # 长描述格式
     url="https://github.com/zheng-oh/imgclass",  # 项目地址
