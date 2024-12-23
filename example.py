@@ -110,15 +110,19 @@ class Deeptest(Test):
         batch_size=8,     # 批处理大小
         device="cpu",
     ):
+        self.modelname = modelname
+        self.dp = dp
         self.device = device
         # 检查 net_num 是否为 18 或 50
         if net_num not in [18, 50]:
             raise ValueError("net_num must be 18 or 50")
-        super().__init__(modelname, dp,net_num, batch_size)
+        self.model = models.resnet50(weights=models.ResNet50_Weights.DEFAULT) if net_num == 50 else models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
+        super().__init__(device,net_num, batch_size)
     #
     def run(self):
         self.get_dataloaders()
         self.init_model()
+        print(self.model)
         self.runtest()
         self.plt()
         print(
@@ -131,17 +135,11 @@ class Deeptest(Test):
         self.modelname = self.modelname + "_" + str(len(self.class_name))
         self.dataloaders = {"test": torch.utils.data.DataLoader(dataset=image_datasets, batch_size=self.batch_size, shuffle=True)
         }
+        print(f"Number of test samples: {len(image_datasets)}")
         self.lables = image_datasets.classes
         self.num_classes = len(self.lables)
 
     def init_model(self):
-        if self.net_num == 50:
-            self.model = models.resnet50(weights=models.ResNet50_Weights.DEFAULT)
-        elif self.net_num == 18:
-            self.model = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
-        else:
-            print("输入的模型层数错误")
-            return
         for param in self.model.parameters():
             param.requires_grad = False
         self.model.fc = nn.Sequential(
@@ -160,8 +158,11 @@ class Deeptest(Test):
             self.matrix,
             self.lables,
             self.test_acc,
+            self.preds_list,
+            self.features_by_layer,
         )
         p.max_roc("max_roc_{}".format(self.modelname))
+        p.tsne("tsne_{}".format(self.modelname))
 
 class Deeppred(Pred):
     def __init__(self,  
@@ -242,7 +243,7 @@ def main(work,name):
 if __name__ == "__main__":
     works=["train","test","pred"]
     #请输入0、1、2 代表执行训练、测试、外部预测。进行外部预测时，必须使用模型名称
-    main(works[0], 'food') 
+    main(works[1], 'food') 
     # main(works[1], 'food')
     # main(works[2], 'food_Resnet18_4') 
     

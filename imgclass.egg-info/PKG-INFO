@@ -1,7 +1,7 @@
 Metadata-Version: 2.1
 Name: imgclass
-Version: 0.1.6
-Summary: example中 add class_name 到model_info
+Version: 0.1.7
+Summary: test.py add 层特征提取; results 添加t-sen绘图
 Home-page: https://github.com/zheng-oh/imgclass
 Author: ZXING
 Author-email: zxing_oh@163.com

@@ -1,30 +1,58 @@
-import os.path
 import torch
 import torch.nn as nn
 import numpy as np
 
 
 class Test:
-    def __init__(self, modelname="train", dp="./data", net_num=18, batch_size=8):
+    def __init__(self, device, net_num=18, batch_size=8, num_classes=10,target_layers=['conv1', 'layer1', 'layer2', 'layer3', 'layer4', 'fc']):
+        self.device = device
         self.criterion = nn.CrossEntropyLoss()
-        self.modelname = modelname
-        self.dp = dp
         self.net_num = net_num
         self.batch_size = batch_size
-        self.num_classes = 0
+        self.num_classes = num_classes
         self.test_datasets = ""
         self.dataloaders = ""
         self.test_num = 0
-        self.lables = []  # 存储标签名称
+        self.labels = []  # 存储标签名称
         self.target_list = []  # 存储真实标签
         self.score_list = []  # 存储预测得分
         self.preds_list = []  # 存储预测标签
-        self.matrix = []  # 存储混淆矩阵
+        self.matrix = None  # 初始化混淆矩阵
         self.test_loss = 0
         self.test_acc = 0
+        self.features_by_layer = {}
+        self.target_layers=target_layers
+
+    def _register_hooks(self):
+        """注册钩子函数来捕获每层特征"""
+        self.hooks = []
+        for name, module in self.model.named_modules():
+            if name in self.target_layers:
+                hook = module.register_forward_hook(self._hook_fn(name))
+                self.hooks.append(hook)
+
+    def _hook_fn(self, name):
+        """钩子函数捕获特征"""
+        def hook(module, input, output):
+            # 将每层的输出特征保存到字典中
+            if name not in self.features_by_layer:
+                self.features_by_layer[name] = []
+            self.features_by_layer[name].append(output.detach().cpu().numpy())  # 存储每个 batch 的特征
+        return hook
+
+    def confusion_matrix(self, conf_matrix):
+        """更新混淆矩阵"""
+        if conf_matrix is None:
+            conf_matrix = np.zeros((self.num_classes, self.num_classes), dtype=int)
+        
+        for p, t in zip(self.preds_list, self.target_list):
+            conf_matrix[p, t] += 1  # p 和 t 是整数，表示标签
+        return conf_matrix
+
 
     def runtest(self):
         print("加载model: {}".format(self.modelname))  
+        self._register_hooks()
         self.test_num = len(self.dataloaders['test'].dataset)
         self.runwork()
         result = {"test_acc": self.test_acc, "test_loss": self.test_loss}
@@ -33,11 +61,6 @@ class Test:
                 result["test_acc"], result["test_loss"]
             )
         )
-
-    def confusion_matrix(self, conf_matrix):
-        for p, t in zip(self.preds_list, self.target_list):
-            conf_matrix[p, t] += 1
-        return conf_matrix
 
     def runwork(self):
         self.model.eval()
