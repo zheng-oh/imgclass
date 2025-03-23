@@ -1,7 +1,7 @@
 Metadata-Version: 2.1
 Name: imgclass
-Version: 0.1.8
-Summary: add k-folds功能
+Version: 0.1.9
+Summary: add k-folds功能 修复get_loader
 Home-page: https://github.com/zheng-oh/imgclass
 Author: ZXING
 Author-email: zxing_oh@163.com
