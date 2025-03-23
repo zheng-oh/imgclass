@@ -7,12 +7,12 @@ from sklearn.manifold import TSNE
 from sklearn.preprocessing import LabelEncoder
 
 class Resultplt:
-    def __init__(self, n_classes, label_list, score_list, matrix, lables, test_acc, preds_list,features_by_layer, target_layers=['conv1', 'layer1', 'layer2', 'layer3', 'layer4', 'fc']):
+    def __init__(self, n_classes, label_list, score_list, matrix, labels, test_acc, preds_list,features_by_layer, target_layers=['conv1', 'layer1', 'layer2', 'layer3', 'layer4', 'fc']):
         self.n_classes = n_classes
         self.label_list = label_list
         self.score_list = score_list
         self.matrix = matrix
-        self.lables = lables
+        self.labels = labels
         self.test_acc = test_acc
         self.preds_list=  preds_list
         self.features_by_layer = features_by_layer
@@ -25,9 +25,9 @@ class Resultplt:
         # plot.imshow(self.matrix, cmap=plt.cm.Blues)
         kk = plot.imshow(self.matrix, cmap=plt.cm.Blues)
         # 设置x轴坐标label
-        plot.set_xticks([i for i in range(self.n_classes)], self.lables, rotation=45)
+        plot.set_xticks([i for i in range(self.n_classes)], self.labels, rotation=45)
         # 设置y轴坐标label
-        plot.set_yticks([i for i in range(self.n_classes)], self.lables)
+        plot.set_yticks([i for i in range(self.n_classes)], self.labels)
         # 显示colorbar
         # plot.colorbar()
         plt.colorbar(kk, ax=plot)
@@ -121,7 +121,7 @@ class Resultplt:
                 color=color,
                 lw=lw,
                 label="ROC curve of class {0} (area = {1:0.2f})"
-                "".format(self.lables[i], roc_auc_dict[i]),
+                "".format(self.labels[i], roc_auc_dict[i]),
             )
         plt.plot([0, 1], [0, 1], "k--", lw=lw)
         plt.set_xlim([0.0, 1.0])
@@ -216,3 +216,6 @@ class Resultplt:
 
         plt.tight_layout()
         plt.savefig("./results/{}.pdf".format(name))
+
+
+

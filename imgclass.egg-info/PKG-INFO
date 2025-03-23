@@ -1,7 +1,7 @@
 Metadata-Version: 2.1
 Name: imgclass
-Version: 0.1.7
-Summary: test.py add 层特征提取; results 添加t-sen绘图
+Version: 0.1.8
+Summary: add k-folds功能
 Home-page: https://github.com/zheng-oh/imgclass
 Author: ZXING
 Author-email: zxing_oh@163.com

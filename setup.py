@@ -2,10 +2,10 @@ from setuptools import setup, find_packages
 
 setup(
     name="imgclass",  # 包名称
-    version="0.1.7",  # 包版本
+    version="0.1.8",  # 包版本
     author="ZXING",  # 作者名
     author_email="zxing_oh@163.com",  # 作者邮箱
-    description="test.py add 层特征提取; results 添加t-sen绘图",  # 包描述
+    description="add k-folds功能",  # 包描述
     long_description=open("README.md").read(),  # 从 README 加载长描述
     long_description_content_type="text/markdown",  # 长描述格式
     url="https://github.com/zheng-oh/imgclass",  # 项目地址
